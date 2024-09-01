@@ -1,5 +1,6 @@
 package com.kss.kafka.service;
 
+import com.kss.kafka.dto.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -14,7 +15,7 @@ public class KafkaMessagePublisher {
     private KafkaTemplate<String, Object> template;
 
     public void sendMessageToTopic(String message){
-        CompletableFuture<SendResult<String, Object>> future = template.send("kss-topic-1", message);
+        CompletableFuture<SendResult<String, Object>> future = template.send("kss-topic-1", 3, null, message);
         future.whenComplete((result, ex)->{
            if(ex==null){
                System.out.println("Sent message=["+ message +"] with offset=["+ result.getRecordMetadata().offset() +"]");
@@ -22,6 +23,21 @@ public class KafkaMessagePublisher {
                System.out.println("Unable sent message=["+ message +"] due to=["+ ex.getMessage() +"]");
            }
         });
+    }
+
+    public void sendObjectMessageToTopic(Customer customer){
+        try {
+            CompletableFuture<SendResult<String, Object>> future = template.send("kss-topic", customer);
+            future.whenComplete((result, ex) -> {
+                if (ex == null) {
+                    System.out.println("Sent object message=[" + customer.toString() + "] with offset=[" + result.getRecordMetadata().offset() + "]");
+                } else {
+                    System.out.println("Unable sent object message=[" + customer.toString() + "] due to=[" + ex.getMessage() + "]");
+                }
+            });
+        }catch (Exception e){
+            System.out.println("ERROR: While sending customer object "+e.getMessage());
+        }
     }
 
 }
