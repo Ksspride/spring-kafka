@@ -5,6 +5,7 @@ import com.kss.kafka.dto.Customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,11 +33,14 @@ public class KafkaMessageListener {
 //    }
 
     @KafkaListener(topics = "kss-topic", groupId = "kss-group")
-    public void consume(Customer customer){
+    public void consume(String customer){
         log.info("Customer object message {} ", customer.toString());
     }
 
-
+//    @KafkaListener(topics = "test-topic", groupId = "kss-group", topicPartitions = {@TopicPartition(topic = "test-topic", partitions = {"2"})})
+//    public void consume1(String message){
+//        log.info("1 Consumed message {} ", message);
+//    }
 
 
 

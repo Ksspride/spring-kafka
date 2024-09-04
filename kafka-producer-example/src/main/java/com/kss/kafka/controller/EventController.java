@@ -2,6 +2,7 @@ package com.kss.kafka.controller;
 
 
 import com.kss.kafka.dto.Customer;
+import com.kss.kafka.dto.User;
 import com.kss.kafka.service.KafkaMessagePublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,10 +23,10 @@ public class EventController {
 
 
     @GetMapping("/publish/{message}")
-    public ResponseEntity<?> publishMessage(@PathVariable String message){
+    public ResponseEntity<?> publishMessage(@PathVariable String message) {
         try {
-            for(int i=1; i<=10000; i++) {
-                publisher.sendMessageToTopic(message+" : "+i);
+            for (int i = 1; i <= 1; i++) {
+                publisher.sendMessageToTopic(message + " : " + i);
             }
             return ResponseEntity.ok("Message published successfully ...");
         } catch (Exception e) {
@@ -34,9 +35,20 @@ public class EventController {
     }
 
     @PostMapping("/publish")
-    public ResponseEntity<?> publishObjectMessage(@RequestBody Customer customer){
+    public ResponseEntity<?> publishObjectMessage(@RequestBody Customer customer) {
         try {
-           publisher.sendObjectMessageToTopic(customer);
+            publisher.sendObjectMessageToTopic(customer);
+            return ResponseEntity.ok("Object message published successfully ...");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @PostMapping("/publish/handler")
+    public ResponseEntity<?> publishDTLMessage(@RequestBody User user) {
+        try {
+            publisher.sendDTLMessageToTopic(user);
             return ResponseEntity.ok("Object message published successfully ...");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
